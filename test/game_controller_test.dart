@@ -192,4 +192,61 @@ void main() {
       expect(g.board.cells.where((v) => v > 0).length, 3);
     });
   }
+
+  test('hint costs one use and returns a direction', () async {
+    final g = GameController()..newGame(Difficulty.easy, seed: 2);
+    final limit = kDifficulties[Difficulty.easy]!.hintLimit;
+    expect(g.canHint, isTrue);
+
+    await g.requestHint();
+
+    expect(g.hint, isNotNull);
+    expect(g.hintsLeft, limit - 1);
+    expect(g.hintLoading, isFalse);
+  });
+
+  test('difficulties without hints never hint', () async {
+    final g = GameController()..newGame(Difficulty.hard, seed: 2);
+    expect(g.canHint, isFalse);
+
+    await g.requestHint();
+
+    expect(g.hint, isNull);
+    expect(g.hintsLeft, 0);
+  });
+
+  test('remove tile clears a tile and costs one use', () {
+    final g = GameController()..newGame(Difficulty.easy, seed: 2);
+    final before = g.removeLeft;
+    final index = g.board.cells.indexWhere((v) => v > 0);
+
+    g.removeTile(index);
+
+    expect(g.board.cells[index], 0);
+    expect(g.removeLeft, before - 1);
+  });
+
+  test('remove tile ignores empty cells and stones', () {
+    final g = GameController()..newGame(Difficulty.easy, seed: 2);
+    final before = g.removeLeft;
+    final empty = g.board.cells.indexWhere((v) => v == 0);
+
+    g.removeTile(empty);
+    g.board = g.board.withCell(0, kBlock);
+    g.removeTile(0);
+
+    expect(g.removeLeft, before);
+    expect(g.board.cells[0], kBlock);
+  });
+
+  test('remove tile is disabled when the difficulty grants none', () {
+    final g = GameController()..newGame(Difficulty.veryHard, seed: 2);
+    expect(g.canRemove, isFalse);
+    final index = g.board.cells.indexWhere((v) => v > 0);
+    final value = g.board.cells[index];
+
+    g.removeTile(index);
+
+    expect(g.board.cells[index], value);
+  });
 }

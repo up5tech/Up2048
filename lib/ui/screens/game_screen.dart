@@ -31,6 +31,7 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
   bool _dialogOpen = false;
+  bool _removing = false;
   GameStatus _lastHandledStatus = GameStatus.playing;
 
   @override
@@ -137,11 +138,38 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
         ],
       ),
     );
-    if (ok == true && mounted) game.newGame(widget.difficulty);
+    if (ok == true && mounted) {
+      setState(() => _removing = false);
+      game.newGame(widget.difficulty);
+    }
+  }
+
+  void _toggleRemove(GameController game) {
+    if (_removing) {
+      setState(() => _removing = false);
+      return;
+    }
+    if (!game.canRemove) return;
+    setState(() => _removing = true);
+  }
+
+  void _onCellTap(GameController game, int index) {
+    if (!_removing) return;
+    final before = game.removeLeft;
+    game.removeTile(index);
+    // Leaving the mode only when the tile was actually removed; tapping an
+    // empty cell or a stone keeps the power-up active (PLAN.md §19 #14).
+    if (game.removeLeft != before) setState(() => _removing = false);
+  }
+
+  void _onSwipe(GameController game, Direction d) {
+    if (_removing) return; // swipes are ignored while deleting a tile
+    game.swipe(d);
   }
 
   KeyEventResult _onKey(FocusNode node, KeyEvent event) {
     if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    if (_removing) return KeyEventResult.ignored;
     final game = context.read<GameController>();
     final map = <LogicalKeyboardKey, Direction>{
       LogicalKeyboardKey.arrowUp: Direction.up,
@@ -205,18 +233,25 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
               Expanded(
                 child: Center(
                   child: SwipeDetector(
-                    onSwipe: game.swipe,
+                    onSwipe: (d) => _onSwipe(game, d),
                     child: BoardView(
                       board: game.board,
                       tiles: game.tiles,
                       reduceMotion: game.reduceMotion,
+                      hint: game.hint,
+                      onCellTap: _removing
+                          ? (index) => _onCellTap(game, index)
+                          : null,
                     ),
                   ),
                 ),
               ),
               GameToolbar(
                 game: game,
+                removeActive: _removing,
                 onNewGame: () => _confirmNewGame(game),
+                onHint: () => game.requestHint(),
+                onToggleRemove: () => _toggleRemove(game),
               ),
             ],
           ),

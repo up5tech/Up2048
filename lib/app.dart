@@ -4,13 +4,15 @@ import 'package:provider/provider.dart';
 import 'controllers/game_controller.dart';
 import 'controllers/settings_controller.dart';
 import 'controllers/stats_controller.dart';
+import 'data/audio_service.dart';
 import 'data/storage_service.dart';
 import 'ui/screens/home_screen.dart';
 
 class Up2048App extends StatelessWidget {
   final StorageService storage;
+  final AudioService? audio;
 
-  const Up2048App({super.key, required this.storage});
+  const Up2048App({super.key, required this.storage, this.audio});
 
   static const _seed = Color(0xFF4F9DB8);
 
@@ -25,6 +27,7 @@ class Up2048App extends StatelessWidget {
             storage: storage,
             stats: ctx.read<StatsController>(),
             settings: ctx.read<SettingsController>(),
+            audio: audio,
           ),
         ),
       ],
