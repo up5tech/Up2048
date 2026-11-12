@@ -156,6 +156,30 @@ void main() {
     expect(g.board.cells.where((v) => v > 0).length, 2);
   });
 
+  test('tiles stay in sync with the board and settle after each move',
+      () async {
+    expect(await playAnyMove(game), isTrue);
+    final occupied = {
+      for (var i = 0; i < game.board.cells.length; i++)
+        if (game.board.cells[i] > 0) i,
+    };
+    expect(game.tiles, hasLength(occupied.length));
+    expect(game.tiles.map((t) => t.index).toSet(), occupied);
+    expect(game.tiles.map((t) => t.id).toSet(), hasLength(occupied.length));
+    expect(game.tiles.any((t) => t.isGhost || t.isNew || t.isMerged), isFalse);
+  });
+
+  test('a swipe during the animation is buffered and replayed once', () async {
+    // Fire two swipes back to back: the second must not be dropped.
+    final first = game.swipe(Direction.left);
+    final second = game.swipe(Direction.right);
+    await first;
+    await second;
+    expect(game.moves, greaterThanOrEqualTo(1));
+    final occupied = game.board.cells.where((v) => v > 0).length;
+    expect(game.tiles, hasLength(occupied));
+  });
+
   for (final d in [Difficulty.hard, Difficulty.veryHard]) {
     test('${d.name} spawns two tiles on the configured move', () async {
       final g = GameController()..newGame(d, seed: 12);

@@ -32,6 +32,14 @@ class _GameScreenState extends State<GameScreen> {
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Follow the platform "reduce motion" accessibility setting.
+    context.read<GameController>().reduceMotion =
+        MediaQuery.of(context).disableAnimations;
+  }
+
   void _maybeShowDialog(GameController game) {
     // Only react to a status *transition*, so a dismissed dialog does not
     // reopen on every rebuild.
@@ -164,7 +172,11 @@ class _GameScreenState extends State<GameScreen> {
                 child: Center(
                   child: SwipeDetector(
                     onSwipe: game.swipe,
-                    child: BoardView(board: game.board),
+                    child: BoardView(
+                      board: game.board,
+                      tiles: game.tiles,
+                      reduceMotion: game.reduceMotion,
+                    ),
                   ),
                 ),
               ),

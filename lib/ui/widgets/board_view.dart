@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../../core/tile_palette.dart';
 import '../../domain/models/board.dart';
+import '../../domain/models/tile_view.dart';
 import 'tile_widget.dart';
 
-/// Static board renderer (Phase 2). Phase 4 swaps in TileView +
-/// AnimatedPositioned for slide/merge/spawn animation.
+/// Board renderer with animated slide, merge and spawn (PLAN.md §15.2).
 class BoardView extends StatelessWidget {
   final Board board;
+  final List<TileView> tiles;
+  final bool reduceMotion;
 
-  const BoardView({super.key, required this.board});
+  const BoardView({
+    super.key,
+    required this.board,
+    required this.tiles,
+    this.reduceMotion = false,
+  });
 
   static const double _gapRatio = 0.025; // gap as fraction of cell pitch
 
@@ -18,13 +25,21 @@ class BoardView extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final n = board.size;
-        // Square board: min(width, height × 0.6 of available space).
-        final side =
-            constraints.maxWidth < constraints.maxHeight * 0.75
-                ? constraints.maxWidth
-                : constraints.maxHeight * 0.75;
+        // Square board: min(width, height × 0.75 of available space).
+        final side = constraints.maxWidth < constraints.maxHeight * 0.75
+            ? constraints.maxWidth
+            : constraints.maxHeight * 0.75;
         final gap = side * _gapRatio / (n + _gapRatio * n);
         final cell = (side - gap * (n + 1)) / n;
+        final slideMs = reduceMotion ? 0 : 120;
+
+        // Ghosts paint first so the merged tile lands on top of them.
+        final ordered = [
+          for (final t in tiles)
+            if (t.isGhost) t,
+          for (final t in tiles)
+            if (!t.isGhost) t,
+        ];
 
         return RepaintBoundary(
           child: Container(
@@ -49,15 +64,24 @@ class BoardView extends StatelessWidget {
                         : EmptyCell(size: cell),
                   ),
                 // Tile layer.
-                for (var i = 0; i < board.cells.length; i++)
-                  if (board.cells[i] > 0)
-                    Positioned(
-                      left: (i % n) * (cell + gap),
-                      top: (i ~/ n) * (cell + gap),
-                      width: cell,
-                      height: cell,
-                      child: TileWidget(value: board.cells[i], size: cell),
+                for (final t in ordered)
+                  AnimatedPositioned(
+                    key: ValueKey<int>(t.id),
+                    duration: Duration(milliseconds: slideMs),
+                    curve: Curves.easeOut,
+                    left: (t.index % n) * (cell + gap),
+                    top: (t.index ~/ n) * (cell + gap),
+                    width: cell,
+                    height: cell,
+                    child: TileWidget(
+                      value: t.value,
+                      size: cell,
+                      isNew: t.isNew,
+                      isMerged: t.isMerged,
+                      isGhost: t.isGhost,
+                      reduceMotion: reduceMotion,
                     ),
+                  ),
               ],
             ),
           ),

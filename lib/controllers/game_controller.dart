@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../domain/models/board.dart';
 import '../domain/models/difficulty.dart';
 import '../domain/models/direction.dart';
+import '../domain/models/tile_view.dart';
 import '../domain/slide.dart';
 import '../domain/spawner.dart';
 
@@ -31,6 +32,13 @@ class GameController extends ChangeNotifier {
   GameStatus status = GameStatus.playing;
   Direction? hint;
 
+  /// Tiles the UI draws: stable ids plus one-shot animation flags.
+  List<TileView> tiles = [];
+
+  /// Mirrors the platform "reduce motion" setting: animation windows collapse
+  /// to zero so a move resolves immediately.
+  bool reduceMotion = false;
+
   bool _animating = false;
   Direction? _queued; // one buffered swipe during animation
   final List<_Snapshot> _undo = [];
@@ -55,6 +63,7 @@ class GameController extends ChangeNotifier {
     _undo.clear();
     _animating = false;
     _queued = null;
+    tiles = TileView.fromBoard(board);
     notifyListeners();
   }
 
@@ -78,6 +87,7 @@ class GameController extends ChangeNotifier {
 
     // 1 tile normally, 2 on "double spawn" moves
     var next = r.board;
+    final spawnedAt = <int>[];
     final count =
         1 + ((cfg.doubleSpawnEvery > 0 && moves % cfg.doubleSpawnEvery == 0)
             ? 1
@@ -86,13 +96,16 @@ class GameController extends ChangeNotifier {
       final s = _spawner.spawn(next);
       if (s == null) break;
       next = s.board;
+      spawnedAt.add(s.index);
     }
     board = next;
+
+    // Hand the UI stable identities so tiles slide instead of teleporting.
+    tiles = TileView.applyMove(tiles, r.motions, board, spawnedAt);
     notifyListeners();
 
-    // Phase 2 has no tile animation yet; keep the cadence so fast swipes
-    // still buffer correctly once TileView lands in Phase 4.
-    await Future.delayed(const Duration(milliseconds: _animMs));
+    await Future.delayed(Duration(milliseconds: reduceMotion ? 0 : _animMs));
+    tiles = TileView.settle(tiles); // drop ghosts, clear animation flags
     _animating = false;
 
     _updateStatus();
@@ -127,6 +140,8 @@ class GameController extends ChangeNotifier {
         : GameStatus.playing;
     if (!canMove(board)) status = GameStatus.over;
     hint = null;
+    // Tile identities cannot be reconstructed for a restored board.
+    tiles = TileView.fromBoard(board);
     notifyListeners();
   }
 
@@ -137,6 +152,7 @@ class GameController extends ChangeNotifier {
     if (_undo.length > 20) _undo.removeAt(0);
     board = board.withCell(cellIndex, kEmpty);
     removeLeft--;
+    tiles = TileView.fromBoard(board);
     notifyListeners();
   }
 
