@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'controllers/game_controller.dart';
+import 'domain/models/difficulty.dart';
+import 'ui/screens/game_screen.dart';
 
 class Up2048App extends StatelessWidget {
   const Up2048App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Up2048',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4F9DB8)),
-        useMaterial3: true,
-      ),
-      home: const Scaffold(
-        body: Center(child: Text('Up2048')),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => GameController()),
+      ],
+      child: MaterialApp(
+        title: 'Up2048',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: const Color(0xFF4F9DB8)),
+          useMaterial3: true,
+        ),
+        home: const GameScreen(difficulty: Difficulty.medium),
       ),
     );
   }
