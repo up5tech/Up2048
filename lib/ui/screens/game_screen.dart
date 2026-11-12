@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/game_controller.dart';
+import '../../controllers/settings_controller.dart';
 import '../../core/difficulty_style.dart';
 import '../../domain/models/difficulty.dart';
 import '../../domain/models/direction.dart';
@@ -14,30 +15,61 @@ import '../widgets/swipe_detector.dart';
 
 class GameScreen extends StatefulWidget {
   final Difficulty difficulty;
-  const GameScreen({super.key, required this.difficulty});
+
+  /// Resume the saved game for [difficulty] instead of starting a new one.
+  final bool resume;
+
+  const GameScreen({
+    super.key,
+    required this.difficulty,
+    this.resume = false,
+  });
 
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> {
+class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
   bool _dialogOpen = false;
   GameStatus _lastHandledStatus = GameStatus.playing;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<GameController>().newGame(widget.difficulty);
+      if (!mounted) return;
+      final game = context.read<GameController>();
+      if (widget.resume) {
+        game.resume(widget.difficulty);
+      } else {
+        game.newGame(widget.difficulty);
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Follow the platform "reduce motion" accessibility setting.
-    context.read<GameController>().reduceMotion =
+    context.read<GameController>().systemReduceMotion =
         MediaQuery.of(context).disableAnimations;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Autosave when the app goes to the background (PLAN.md §16.2).
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
+      if (mounted) context.read<GameController>().saveNow();
+    }
   }
 
   void _maybeShowDialog(GameController game) {
@@ -130,6 +162,8 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     final game = context.watch<GameController>();
+    // Rebuild when motion preferences change so animations follow them.
+    context.watch<SettingsController>();
     // Trigger dialogs after the frame in which status changed.
     WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowDialog(game));
 
