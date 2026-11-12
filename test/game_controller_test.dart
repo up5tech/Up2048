@@ -121,4 +121,51 @@ void main() {
     }
     expect(g.moves, greaterThanOrEqualTo(10));
   });
+
+  test('each difficulty starts a board matching its config', () {
+    for (final d in Difficulty.values) {
+      final g = GameController()..newGame(d, seed: 4);
+      final cfg = kDifficulties[d]!;
+      expect(g.cfg.id, d);
+      expect(g.board.size, cfg.boardSize, reason: d.name);
+      expect(g.board.cells, hasLength(cfg.boardSize * cfg.boardSize));
+      expect(g.board.cells.where((v) => v > 0).length, cfg.initialTiles,
+          reason: '${d.name} initial tiles');
+      expect(
+        g.board.cells.where((v) => v == kBlock).length,
+        cfg.blockedLayouts.isEmpty ? 0 : cfg.blockedLayouts.first.length,
+        reason: '${d.name} stones',
+      );
+    }
+  });
+
+  // A single tile at the right end of row 0 slides left without merging,
+  // so the tile count after a move is `1 + spawns`.
+  Board oneSlidingTile() => Board(4, [
+        0, 0, 0, 2, //
+        0, 0, 0, 0, //
+        0, 0, 0, 0, //
+        0, 0, 0, 0, //
+      ]);
+
+  test('medium spawns exactly one tile per move', () async {
+    final g = GameController()..newGame(Difficulty.medium, seed: 12);
+    g.board = oneSlidingTile();
+    await g.swipe(Direction.left);
+    expect(g.moves, 1);
+    expect(g.board.cells.where((v) => v > 0).length, 2);
+  });
+
+  for (final d in [Difficulty.hard, Difficulty.veryHard]) {
+    test('${d.name} spawns two tiles on the configured move', () async {
+      final g = GameController()..newGame(d, seed: 12);
+      final every = g.cfg.doubleSpawnEvery;
+      expect(every, greaterThan(0));
+      g.moves = every - 1;
+      g.board = oneSlidingTile();
+      await g.swipe(Direction.left);
+      expect(g.moves, every);
+      expect(g.board.cells.where((v) => v > 0).length, 3);
+    });
+  }
 }

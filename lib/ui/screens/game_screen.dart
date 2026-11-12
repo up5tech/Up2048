@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/game_controller.dart';
+import '../../core/difficulty_style.dart';
 import '../../domain/models/difficulty.dart';
 import '../../domain/models/direction.dart';
 import '../widgets/board_view.dart';
@@ -126,7 +127,21 @@ class _GameScreenState extends State<GameScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${kDifficulties[widget.difficulty]!.label} — Up2048'),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                color: kDifficultyStyles[widget.difficulty]!.accent,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text('${kDifficulties[widget.difficulty]!.label} — Up2048'),
+          ],
+        ),
         actions: [
           IconButton(
             tooltip: 'New game',

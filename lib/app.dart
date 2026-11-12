@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'controllers/game_controller.dart';
-import 'domain/models/difficulty.dart';
-import 'ui/screens/game_screen.dart';
+import 'ui/screens/home_screen.dart';
 
 class Up2048App extends StatelessWidget {
   const Up2048App({super.key});
@@ -22,7 +21,7 @@ class Up2048App extends StatelessWidget {
               ColorScheme.fromSeed(seedColor: const Color(0xFF4F9DB8)),
           useMaterial3: true,
         ),
-        home: const GameScreen(difficulty: Difficulty.medium),
+        home: const HomeScreen(),
       ),
     );
   }
