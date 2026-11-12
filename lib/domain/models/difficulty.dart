@@ -68,10 +68,10 @@ const Map<Difficulty, DifficultyConfig> kDifficulties = {
     label: 'Hard',
     boardSize: 4,
     targetTile: 2048,
-    spawnTable: [SpawnWeight(2, 70), SpawnWeight(4, 25), SpawnWeight(8, 5)],
+    spawnTable: [SpawnWeight(2, 77), SpawnWeight(4, 20), SpawnWeight(8, 3)],
     initialTiles: 3,
     doubleSpawnEvery: 10,
-    adversaryStrength: 0.25,
+    adversaryStrength: 0.1,
     undoLimit: 1,
     hintLimit: 0,
     removeTileLimit: 0,
@@ -81,8 +81,8 @@ const Map<Difficulty, DifficultyConfig> kDifficulties = {
     id: Difficulty.veryHard,
     label: 'Very Hard',
     boardSize: 4,
-    targetTile: 1024,
-    spawnTable: [SpawnWeight(2, 55), SpawnWeight(4, 35), SpawnWeight(8, 10)],
+    targetTile: 512,
+    spawnTable: [SpawnWeight(2, 70), SpawnWeight(4, 25), SpawnWeight(8, 5)],
     initialTiles: 4,
     // Row-major indices on a 4x4 board. All are non-corner and non-adjacent.
     blockedLayouts: [
@@ -91,8 +91,8 @@ const Map<Difficulty, DifficultyConfig> kDifficulties = {
       [1, 14], // (0,1) and (3,2)
       [4, 11], // (1,0) and (2,3)
     ],
-    doubleSpawnEvery: 5,
-    adversaryStrength: 0.65,
+    doubleSpawnEvery: 9,
+    adversaryStrength: 0.35,
     undoLimit: 0,
     hintLimit: 0,
     removeTileLimit: 0,
