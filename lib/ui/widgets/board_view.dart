@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/tile_palette.dart';
+import '../../l10n/app_localizations.dart';
 import '../../domain/models/board.dart';
 import '../../domain/models/direction.dart';
 import '../../domain/models/tile_view.dart';
@@ -34,6 +35,7 @@ class BoardView extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final n = board.size;
+        final l10n = AppLocalizations.of(context);
         // Square board: min(width, height × 0.75 of available space).
         final side = constraints.maxWidth < constraints.maxHeight * 0.75
             ? constraints.maxWidth
@@ -74,7 +76,13 @@ class BoardView extends StatelessWidget {
                       width: cell,
                       height: cell,
                       child: board.cells[i] == kBlock
-                          ? TileWidget(value: 0, size: cell, isStone: true)
+                          ? Semantics(
+                              label: l10n.stoneSemantics(
+                                i ~/ n + 1,
+                                i % n + 1,
+                              ),
+                              child: TileWidget(value: 0, size: cell, isStone: true),
+                            )
                           : EmptyCell(size: cell),
                     ),
                   // Tile layer.
@@ -87,13 +95,20 @@ class BoardView extends StatelessWidget {
                       top: (t.index ~/ n) * (cell + gap),
                       width: cell,
                       height: cell,
-                      child: TileWidget(
-                        value: t.value,
-                        size: cell,
-                        isNew: t.isNew,
-                        isMerged: t.isMerged,
-                        isGhost: t.isGhost,
-                        reduceMotion: reduceMotion,
+                      child: Semantics(
+                        label: l10n.tileSemantics(
+                          t.value,
+                          t.index ~/ n + 1,
+                          t.index % n + 1,
+                        ),
+                        child: TileWidget(
+                          value: t.value,
+                          size: cell,
+                          isNew: t.isNew,
+                          isMerged: t.isMerged,
+                          isGhost: t.isGhost,
+                          reduceMotion: reduceMotion,
+                        ),
                       ),
                     ),
                   // Hint arrow on the edge the bot suggests sliding toward.

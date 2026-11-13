@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+
+import 'l10n/app_localizations.dart';
 
 import 'controllers/game_controller.dart';
 import 'controllers/settings_controller.dart';
@@ -7,6 +10,7 @@ import 'controllers/stats_controller.dart';
 import 'data/audio_service.dart';
 import 'data/storage_service.dart';
 import 'ui/screens/home_screen.dart';
+import 'ui/screens/splash_screen.dart';
 
 class Up2048App extends StatelessWidget {
   final StorageService storage;
@@ -47,10 +51,18 @@ class Up2048App extends StatelessWidget {
               ),
               useMaterial3: true,
             ),
+            locale: Locale(settings.settings.locale),
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
             themeMode: settings.settings.darkMode
                 ? ThemeMode.dark
                 : ThemeMode.light,
-            home: const HomeScreen(),
+            home: SplashScreen(child: const HomeScreen()),
           );
         },
       ),

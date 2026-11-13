@@ -19,6 +19,8 @@ class SettingsController extends ChangeNotifier {
   void setReduceMotion(bool value) =>
       _update(() => settings.reduceMotion = value);
 
+  void setLocale(String value) => _update(() => settings.locale = value);
+
   /// Restores defaults (used by "Reset data").
   void reset() {
     settings = Settings();

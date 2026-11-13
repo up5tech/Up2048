@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../controllers/game_controller.dart';
+import '../../l10n/app_localizations.dart';
 
 class GameToolbar extends StatelessWidget {
   final GameController game;
@@ -20,6 +21,7 @@ class GameToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       child: Wrap(
@@ -30,7 +32,8 @@ class GameToolbar extends StatelessWidget {
           FilledButton.tonalIcon(
             onPressed: game.canUndo ? game.undo : null,
             icon: const Icon(Icons.undo, size: 18),
-            label: Text('Undo (${game.undoLeft < 0 ? '∞' : game.undoLeft})'),
+            label: Text(l10n.undoLabel(
+                game.undoLeft < 0 ? '∞' : '${game.undoLeft}')),
           ),
           // Tool buttons only exist on difficulties that grant them.
           if (game.cfg.hintLimit > 0)
@@ -42,7 +45,7 @@ class GameToolbar extends StatelessWidget {
                     : Icons.lightbulb_outline,
                 size: 18,
               ),
-              label: Text('Hint (${game.hintsLeft})'),
+              label: Text(l10n.hintLabel(game.hintsLeft)),
             ),
           if (game.cfg.removeTileLimit > 0)
             FilledButton.tonalIcon(
@@ -52,13 +55,15 @@ class GameToolbar extends StatelessWidget {
                 size: 18,
               ),
               label: Text(
-                removeActive ? 'Cancel' : 'Remove (${game.removeLeft})',
+                removeActive
+                    ? l10n.cancelLabel
+                    : l10n.removeLabel(game.removeLeft),
               ),
             ),
           FilledButton.tonalIcon(
             onPressed: onNewGame,
             icon: const Icon(Icons.refresh, size: 18),
-            label: const Text('New game'),
+            label: Text(l10n.newGameButton),
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../domain/models/difficulty.dart';
+import '../l10n/app_localizations.dart';
 
 /// Per-difficulty accent colour and one-line description (PLAN.md §3.3, §13.3).
 class DifficultyStyle {
@@ -28,17 +29,35 @@ const Map<Difficulty, DifficultyStyle> kDifficultyStyles = {
   ),
 };
 
+String difficultyLabel(AppLocalizations l10n, Difficulty d) => switch (d) {
+      Difficulty.easy => l10n.difficultyEasy,
+      Difficulty.medium => l10n.difficultyMedium,
+      Difficulty.hard => l10n.difficultyHard,
+      Difficulty.veryHard => l10n.difficultyVeryHard,
+    };
+
+String difficultyTagline(AppLocalizations l10n, Difficulty d) => switch (d) {
+      Difficulty.easy => l10n.taglineEasy,
+      Difficulty.medium => l10n.taglineMedium,
+      Difficulty.hard => l10n.taglineHard,
+      Difficulty.veryHard => l10n.taglineVeryHard,
+    };
+
 /// Rule badges derived from the config, so the card always tells the truth
 /// about what the difficulty actually does (PLAN.md §3.2).
-List<String> ruleBadges(DifficultyConfig cfg) {
+List<String> ruleBadges(AppLocalizations l10n, DifficultyConfig cfg) {
   final n = cfg.boardSize;
   return [
-    '$n×$n board',
-    'Goal ${cfg.targetTile}',
+    l10n.badgeBoard(n),
+    l10n.badgeGoal(cfg.targetTile),
     if (cfg.blockedLayouts.isNotEmpty)
-      '${cfg.blockedLayouts.first.length} stones',
-    if (cfg.adversaryStrength > 0) 'Mean spawns',
-    if (cfg.doubleSpawnEvery > 0) 'Extra tile every ${cfg.doubleSpawnEvery}',
-    if (cfg.undoLimit == 0) 'No undo' else 'Undo ×${cfg.undoLimit}',
+      l10n.badgeStones(cfg.blockedLayouts.first.length),
+    if (cfg.adversaryStrength > 0) l10n.badgeMeanSpawns,
+    if (cfg.doubleSpawnEvery > 0)
+      l10n.badgeExtraTile(cfg.doubleSpawnEvery),
+    if (cfg.undoLimit == 0)
+      l10n.badgeNoUndo
+    else
+      l10n.badgeUndo(cfg.undoLimit),
   ];
 }

@@ -18,6 +18,8 @@ void main() {
 
     final storage = await StorageService.create();
     await tester.pumpWidget(Up2048App(storage: storage));
+    // The branded splash has a 700 ms minimum display before Home appears.
+    await tester.pump(const Duration(milliseconds: 700));
     await tester.pumpAndSettle();
 
     expect(find.text('Easy'), findsOneWidget);
@@ -26,5 +28,31 @@ void main() {
     expect(find.text('Very Hard'), findsOneWidget);
     expect(find.text('Play'), findsNWidgets(4));
     expect(find.text('Not played yet'), findsNWidgets(4));
+  });
+
+  testWidgets('splash hands over to home after its minimum display',
+      (tester) async {
+    final storage = await StorageService.create();
+    await tester.pumpWidget(Up2048App(storage: storage));
+    expect(find.byKey(const ValueKey('splash_content')), findsOneWidget);
+
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('splash_content')), findsNothing);
+    expect(find.text('Easy'), findsOneWidget);
+  });
+
+  testWidgets('reduce motion skips the splash', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'settings_v1':
+          '{"sound":true,"vibration":true,"darkMode":false,"reduceMotion":true,"locale":"en"}',
+    });
+    final storage = await StorageService.create();
+    await tester.pumpWidget(Up2048App(storage: storage));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('splash_content')), findsNothing);
+    expect(find.text('Easy'), findsOneWidget);
   });
 }

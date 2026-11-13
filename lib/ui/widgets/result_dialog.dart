@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../controllers/game_controller.dart';
+import '../../l10n/app_localizations.dart';
 
 enum ResultKind { win, gameOver }
 
@@ -20,24 +21,25 @@ class ResultDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isWin = kind == ResultKind.win;
     return AlertDialog(
       title: Text(isWin
-          ? 'You made ${game.board.maxTile}!'
-          : 'Game over'),
+          ? l10n.resultWinTitle(game.board.maxTile)
+          : l10n.gameOverTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Score: ${game.score}'),
-          Text('Moves: ${game.moves}'),
-          Text('Best tile: ${game.board.maxTile}'),
+          Text(l10n.scoreLine(game.score)),
+          Text(l10n.movesLine(game.moves)),
+          Text(l10n.bestTileLine(game.board.maxTile)),
         ],
       ),
       actions: [
         if (isWin)
-          TextButton(onPressed: onKeepGoing, child: const Text('Keep going')),
+          TextButton(onPressed: onKeepGoing, child: Text(l10n.keepGoing)),
         FilledButton(
-            onPressed: onNewGame, child: const Text('New game')),
+            onPressed: onNewGame, child: Text(l10n.newGameButton)),
       ],
     );
   }

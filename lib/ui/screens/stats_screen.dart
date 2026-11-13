@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../controllers/stats_controller.dart';
 import '../../core/difficulty_style.dart';
+import '../../l10n/app_localizations.dart';
 import '../../domain/models/difficulty.dart';
 import '../../domain/models/save_data.dart';
 
@@ -13,9 +14,10 @@ class StatsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stats = context.watch<StatsController>();
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Statistics')),
+      appBar: AppBar(title: Text(l10n.statsTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
@@ -26,7 +28,7 @@ class StatsScreen extends StatelessWidget {
                 children: [
                   const Icon(Icons.emoji_events_outlined),
                   const SizedBox(width: 12),
-                  const Text('Career points',
+                  Text(l10n.careerPoints,
                       style: TextStyle(fontWeight: FontWeight.w600)),
                   const Spacer(),
                   Text(
@@ -64,6 +66,7 @@ class _DifficultyStatsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = kDifficultyStyles[difficulty]!;
+    final l10n = AppLocalizations.of(context);
     final winRate = stats.gamesPlayed == 0
         ? '—'
         : '${(100 * stats.wins / stats.gamesPlayed).round()}%';
@@ -78,7 +81,7 @@ class _DifficultyStatsCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             color: style.accent.withValues(alpha: 0.14),
             child: Text(
-              kDifficulties[difficulty]!.label,
+              difficultyLabel(l10n, difficulty),
               style: TextStyle(
                 fontWeight: FontWeight.w800,
                 color: style.accent,
@@ -89,12 +92,12 @@ class _DifficultyStatsCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
             child: Column(
               children: [
-                _Row(label: 'Games played', value: '${stats.gamesPlayed}'),
-                _Row(label: 'Wins', value: '${stats.wins}'),
-                _Row(label: 'Win rate', value: winRate),
-                _Row(label: 'Best score', value: '${stats.bestScore}'),
-                _Row(label: 'Best tile', value: '${stats.bestTile}'),
-                _Row(label: 'Total moves', value: '${stats.totalMoves}'),
+                _Row(label: l10n.gamesPlayed, value: '${stats.gamesPlayed}'),
+                _Row(label: l10n.wins, value: '${stats.wins}'),
+                _Row(label: l10n.winRate, value: winRate),
+                _Row(label: l10n.bestScore, value: '${stats.bestScore}'),
+                _Row(label: l10n.bestTile, value: '${stats.bestTile}'),
+                _Row(label: l10n.totalMoves, value: '${stats.totalMoves}'),
               ],
             ),
           ),

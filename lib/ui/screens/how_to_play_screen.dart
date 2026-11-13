@@ -2,29 +2,30 @@ import 'package:flutter/material.dart';
 
 import '../../core/difficulty_style.dart';
 import '../../domain/models/difficulty.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Short rules recap and a summary of each difficulty (PLAN.md §13.2).
 class HowToPlayScreen extends StatelessWidget {
   const HowToPlayScreen({super.key});
 
-  static const _steps = [
-    ('Swipe or use arrow keys', 'All tiles slide in that direction.'),
-    ('Equal tiles merge', 'Two 2s become a 4, and the merged value is scored.'),
-    ('Each tile merges once', '[2, 2, 2, 2] sliding left gives [4, 4], not 8.'),
-    ('Reach the goal tile', 'The target value wins the game — you can keep playing.'),
-    ('No moves left, game over', 'Stones split lines, so plan around them.'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
+    final steps = [
+      (l10n.step1Title, l10n.step1Body),
+      (l10n.step2Title, l10n.step2Body),
+      (l10n.step3Title, l10n.step3Body),
+      (l10n.step4Title, l10n.step4Body),
+      (l10n.step5Title, l10n.step5Body),
+    ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('How to play')),
+      appBar: AppBar(title: Text(l10n.howToPlayTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
         children: [
-          for (var i = 0; i < _steps.length; i++)
+          for (var i = 0; i < steps.length; i++)
             Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: Row(
@@ -47,7 +48,7 @@ class HowToPlayScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _steps[i].$1,
+                          steps[i].$1,
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 15,
@@ -55,7 +56,7 @@ class HowToPlayScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          _steps[i].$2,
+                          steps[i].$2,
                           style: TextStyle(color: scheme.onSurfaceVariant),
                         ),
                       ],
@@ -66,7 +67,7 @@ class HowToPlayScreen extends StatelessWidget {
             ),
           const Divider(height: 32),
           Text(
-            'Difficulties',
+            l10n.difficultiesTitle,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
@@ -88,19 +89,19 @@ class HowToPlayScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        kDifficulties[d]!.label,
+                        difficultyLabel(l10n, d),
                         style: const TextStyle(fontWeight: FontWeight.w800),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    kDifficultyStyles[d]!.tagline,
+                    difficultyTagline(l10n, d),
                     style: TextStyle(color: scheme.onSurfaceVariant),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    ruleBadges(kDifficulties[d]!).join(' · '),
+                    ruleBadges(l10n, kDifficulties[d]!).join(' · '),
                     style: TextStyle(
                       fontSize: 12,
                       color: scheme.onSurfaceVariant,

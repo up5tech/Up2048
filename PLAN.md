@@ -167,23 +167,23 @@ Difficulty is the heart of this plan. Each level is described by **one immutable
 
 ### 4.1 MVP (required – version 1.0)
 
-- [ ] Swipe controls with smooth slide/merge/spawn animation.
-- [ ] Correct merge rules and score.
-- [ ] Four difficulty levels driven by `DifficultyConfig`.
-- [ ] Win dialog (Keep going / New game) and Game-over dialog.
-- [ ] Home screen with difficulty cards.
-- [ ] Per-difficulty autosave and best score.
-- [ ] Undo (respecting per-difficulty limits).
-- [ ] Sound effects with on/off toggle.
+- [x] Swipe controls with smooth slide/merge/spawn animation.
+- [x] Correct merge rules and score.
+- [x] Four difficulty levels driven by `DifficultyConfig`.
+- [x] Win dialog (Keep going / New game) and Game-over dialog.
+- [x] Home screen with difficulty cards.
+- [x] Per-difficulty autosave and best score.
+- [x] Undo (respecting per-difficulty limits).
+- [x] Sound effects with on/off toggle.
 
 ### 4.2 Enhancements (version 1.1)
 
-- [ ] AI hint (expectimax) for Easy/Medium.
-- [ ] "Remove tile" power-up for Easy/Medium.
-- [ ] Per-difficulty statistics screen.
-- [ ] Light/dark theme, reduce-motion setting, haptics.
-- [ ] Localization (en/vi).
-- [ ] Keyboard support (arrows / WASD) for Web and Desktop.
+- [x] AI hint (expectimax) for Easy/Medium.
+- [x] "Remove tile" power-up for Easy/Medium.
+- [x] Per-difficulty statistics screen.
+- [x] Light/dark theme, reduce-motion setting, haptics.
+- [x] Localization (en/vi).
+- [x] Keyboard support (arrows / WASD) for Web and Desktop.
 
 ### 4.3 Extensions (version 2.0, optional)
 
@@ -1759,81 +1759,85 @@ Also check the **ordering**: for every bot, win rate must satisfy `Easy > Medium
 
 ### Phase 0 – Setup (0.5 day)
 
-- [ ] `flutter create up_2048`, remove sample code.
-- [ ] Create the folder structure from section 7.2, `analysis_options.yaml`.
-- [ ] Add dependencies, declare assets/fonts.
-- [ ] Git init, `.gitignore`, first commit; set app name to **Up2048**.
+- [x] `flutter create up_2048`, remove sample code.
+- [x] Create the folder structure from section 7.2, `analysis_options.yaml`.
+- [x] Add dependencies, declare assets/fonts.
+- [x] Git init, `.gitignore`, first commit; set app name to **Up2048**.
 
 **Done when:** the app runs with an empty screen and `flutter analyze` is clean.
 
 ### Phase 1 – Domain Logic & Tests (1.5–2 days)
 
-- [ ] `Direction`, `Board`, `TileMotion`, `MoveResult`.
-- [ ] `slide()` and `canMove()` with the full test suite from 20.1.
-- [ ] `DifficultyConfig` + `kDifficulties` + config sanity tests.
-- [ ] `Spawner`, `createInitialBoard`, spawn tests.
+- [x] `Direction`, `Board`, `TileMotion`, `MoveResult`.
+- [x] `slide()` and `canMove()` with the full test suite from 20.1.
+- [x] `DifficultyConfig` + `kDifficulties` + config sanity tests.
+- [x] `Spawner`, `createInitialBoard`, spawn tests.
 
 **Done when:** `flutter test` is green, including stone behavior.
 
 ### Phase 2 – Playable Prototype on Medium (2 days)
 
-- [ ] `GameController` (no animation yet): `newGame`, `swipe`, win/over detection.
-- [ ] `BoardView` + `TileWidget` (static positions), score panel.
-- [ ] `SwipeDetector` and keyboard input.
-- [ ] Game-over and win dialogs.
+- [x] `GameController` (no animation yet): `newGame`, `swipe`, win/over detection.
+- [x] `BoardView` + `TileWidget` (static positions), score panel.
+- [x] `SwipeDetector` and keyboard input.
+- [x] Game-over and win dialogs.
 
 **Done when:** you can play a full Medium game from start to game over or win.
 
 ### Phase 3 – All Four Difficulties (1–1.5 days)
 
-- [ ] Wire `Difficulty` into `newGame` (board size, spawn table, stones, double spawn).
-- [ ] Add `evaluate()` and the adversary in `Spawner`.
-- [ ] Home screen with four difficulty cards and rule badges.
-- [ ] Stones rendering.
+- [x] Wire `Difficulty` into `newGame` (board size, spawn table, stones, double spawn).
+- [x] Add `evaluate()` and the adversary in `Spawner`.
+- [x] Home screen with four difficulty cards and rule badges.
+- [x] Stones rendering.
 
 **Done when:** each difficulty visibly behaves according to the table in 3.2.
 
 ### Phase 4 – Animation & Game Feel (2 days)
 
-- [ ] `TileView` model, `applyMove`, `settle`.
-- [ ] `AnimatedPositioned` slide, merge bump, spawn pop.
-- [ ] Swipe buffering during animation; reduce-motion support.
+- [x] `TileView` model, `applyMove`, `settle`.
+- [x] `AnimatedPositioned` slide, merge bump, spawn pop.
+- [x] Swipe buffering during animation; reduce-motion support.
 
 **Done when:** movement is smooth and spamming swipes causes no desync.
 
 ### Phase 5 – Persistence, Stats, Settings (1.5 days)
 
-- [ ] `StorageService`, `StatsController`, `SettingsController`.
-- [ ] Autosave/restore per difficulty, Continue button.
-- [ ] Stats screen, Settings screen, How-to-play screen.
+- [x] `StorageService`, `StatsController`, `SettingsController`.
+- [x] Autosave/restore per difficulty, Continue button.
+- [x] Stats screen, Settings screen, How-to-play screen.
 
 **Done when:** quitting and relaunching restores each difficulty's game, best scores and settings.
 
 ### Phase 6 – Tools: Undo, Hint, Remove Tile, Audio (2 days)
 
-- [ ] Undo with per-difficulty limits.
-- [ ] `ExpectimaxBot`, hint button (Isolate), hint arrow.
-- [ ] Remove-tile power-up.
-- [ ] `AudioService`, haptics.
+- [x] Undo with per-difficulty limits.
+- [x] `ExpectimaxBot`, hint button (Isolate), hint arrow.
+- [x] Remove-tile power-up.
+- [x] `AudioService`, haptics.
 
 **Done when:** tools respect each difficulty's limits and survive edge cases (section 19).
 
 ### Phase 7 – Balancing (1.5–2 days)
 
-- [ ] `tool/simulate.dart` with random, greedy and expectimax bots.
-- [ ] Run, compare with targets, tune (section 21), record final numbers.
+- [x] `tool/simulate.dart` with random, greedy and expectimax bots.
+- [x] Run, compare with targets, tune (section 21), record final numbers.
 - [ ] Human playtests; adjust Very Hard target/layouts/adversary.
 
 **Done when:** win-rate ordering Easy > Medium > Hard > Very Hard holds and each level meets its target range or has a documented reason.
 
 ### Phase 8 – Polish & Release (2 days)
 
-- [ ] Localization (en/vi), dark theme, accessibility labels.
-- [ ] Icon, splash, store assets.
+- [x] Localization (en/vi), dark theme, accessibility labels.
+- [x] Icon, splash, store assets.
 - [ ] Full manual test (20.5), especially **airplane mode**.
-- [ ] Build and sign release (section 24).
+- [x] Build and sign release (section 24).
 
 **Done when:** you have an APK/AAB that runs reliably on at least 2 real devices.
+
+**Status (2026-11-13):** signed APK and AAB are built locally and the release
+manifest has no `INTERNET` permission. Real-device and airplane-mode testing,
+human playtests and store screenshots are still pending; see `README.md`.
 
 **Estimated total:** ≈ 14–17 working days for the full version; Medium is playable after Phase 2 and all difficulties after Phase 3.
 
@@ -1883,11 +1887,11 @@ Run `dart run flutter_launcher_icons`.
 
 ### 24.5 Final Pre-Release Checks
 
-- [ ] `flutter analyze` has no errors; `flutter test` is green.
+- [x] `flutter analyze` has no errors; `flutter test` is green.
 - [ ] Release build runs in airplane mode.
-- [ ] No leftover debug `print` calls.
-- [ ] `ASSETS_LICENSE.md` lists audio/font sources.
-- [ ] `BALANCING.md` records the final difficulty numbers and simulation results.
+- [x] No leftover debug `print` calls.
+- [x] `ASSETS_LICENSE.md` lists audio/font sources.
+- [x] `BALANCING.md` records the final difficulty numbers and simulation results.
 
 ---
 
@@ -1911,33 +1915,33 @@ Run `dart run flutter_launcher_icons`.
 
 ### Gameplay
 
-- [ ] Correct slide/merge rules (including single merge per move)
-- [ ] Stones split lines correctly
-- [ ] Spawn tables, double spawn and adversary per difficulty
-- [ ] Win (Keep going) and game-over detection
-- [ ] Four difficulties selectable from Home, each with its own save and stats
+- [x] Correct slide/merge rules (including single merge per move)
+- [x] Stones split lines correctly
+- [x] Spawn tables, double spawn and adversary per difficulty
+- [x] Win (Keep going) and game-over detection
+- [x] Four difficulties selectable from Home, each with its own save and stats
 
 ### Tools & Features
 
-- [ ] Undo, Hint, Remove tile with per-difficulty limits
-- [ ] Autosave and resume per difficulty
-- [ ] Stats screen, best scores, career points
-- [ ] Sound, haptics, dark mode, reduce motion, language
+- [x] Undo, Hint, Remove tile with per-difficulty limits
+- [x] Autosave and resume per difficulty
+- [x] Stats screen, best scores, career points
+- [x] Sound, haptics, dark mode, reduce motion, language
 
 ### Technical
 
-- [ ] Domain layer does not import Flutter
-- [ ] Unit tests for slide, spawner, config, bot, controller
-- [ ] Bot simulation run and final numbers recorded
-- [ ] No network-dependent packages; fonts/audio in assets; no INTERNET permission in release
+- [x] Domain layer does not import Flutter
+- [x] Unit tests for slide, spawner, config, bot, controller
+- [x] Bot simulation run and final numbers recorded
+- [x] No network-dependent packages; fonts/audio in assets; no INTERNET permission in release
 - [ ] Smooth ~60 fps
 
 ### Release
 
-- [ ] Icon, app name (**Up2048**), splash
-- [ ] Signed APK/AAB built
+- [x] Icon, app name (**Up2048**), splash
+- [x] Signed APK/AAB built
 - [ ] Tested on real devices in airplane mode
-- [ ] Asset licenses and balancing notes in the repo
+- [x] Asset licenses and balancing notes in the repo
 
 ---
 

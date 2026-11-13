@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/difficulty_style.dart';
 import '../../domain/models/difficulty.dart';
+import '../../l10n/app_localizations.dart';
 
 /// One difficulty card: name, tagline, rule badges, personal best and the
 /// play/continue actions (PLAN.md §13.2).
@@ -27,6 +28,7 @@ class DifficultyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = kDifficultyStyles[cfg.id]!;
     final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Card(
       elevation: 0,
@@ -57,7 +59,7 @@ class DifficultyCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        cfg.label,
+                        difficultyLabel(l10n, cfg.id),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
@@ -66,7 +68,7 @@ class DifficultyCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        style.tagline,
+                        difficultyTagline(l10n, cfg.id),
                         style: TextStyle(
                           fontSize: 13,
                           color: scheme.onSurfaceVariant,
@@ -82,15 +84,15 @@ class DifficultyCard extends StatelessWidget {
               spacing: 6,
               runSpacing: 6,
               children: [
-                for (final badge in ruleBadges(cfg))
+                for (final badge in ruleBadges(l10n, cfg))
                   _Badge(text: badge, color: style.accent),
               ],
             ),
             const SizedBox(height: 10),
             Text(
               bestScore > 0
-                  ? 'Best $bestScore · Best tile $bestTile'
-                  : 'Not played yet',
+                  ? l10n.bestScoreLine(bestScore, bestTile)
+                  : l10n.notPlayedYet,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -107,12 +109,12 @@ class DifficultyCard extends StatelessWidget {
                       backgroundColor: style.accent,
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Continue'),
+                    child: Text(l10n.continueButton),
                   ),
                   const SizedBox(width: 8),
                   TextButton(
                     onPressed: onNewGame,
-                    child: const Text('New game'),
+                    child: Text(l10n.newGameButton),
                   ),
                 ] else
                   FilledButton(
@@ -121,7 +123,7 @@ class DifficultyCard extends StatelessWidget {
                       backgroundColor: style.accent,
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Play'),
+                    child: Text(l10n.playButton),
                   ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../controllers/game_controller.dart';
+import '../../l10n/app_localizations.dart';
 
 class ScorePanel extends StatelessWidget {
   final GameController game;
@@ -9,12 +10,13 @@ class ScorePanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _Stat(label: 'SCORE', value: '${game.score}', scheme: scheme),
-        _Stat(label: 'MOVES', value: '${game.moves}', scheme: scheme),
-        _Stat(label: 'BEST', value: '${game.board.maxTile}', scheme: scheme),
+        _Stat(label: l10n.scoreLabel, value: '${game.score}', scheme: scheme),
+        _Stat(label: l10n.movesLabel, value: '${game.moves}', scheme: scheme),
+        _Stat(label: l10n.bestLabel, value: '${game.board.maxTile}', scheme: scheme),
       ],
     );
   }

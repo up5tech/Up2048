@@ -8,6 +8,7 @@ import '../../core/difficulty_style.dart';
 import '../../domain/models/difficulty.dart';
 import '../../domain/models/direction.dart';
 import '../widgets/board_view.dart';
+import '../../l10n/app_localizations.dart';
 import '../widgets/game_toolbar.dart';
 import '../widgets/result_dialog.dart';
 import '../widgets/score_panel.dart';
@@ -123,18 +124,19 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
       game.newGame(widget.difficulty);
       return;
     }
+    final l10n = AppLocalizations.of(context);
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Start a new game?'),
-        content: const Text('Your current progress will be lost.'),
+        title: Text(l10n.newGameConfirmTitle),
+        content: Text(l10n.newGameConfirmContent),
         actions: [
           TextButton(
               onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('Cancel')),
+              child: Text(l10n.cancel)),
           FilledButton(
               onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text('New game')),
+              child: Text(l10n.newGameButton)),
         ],
       ),
     );
@@ -195,6 +197,7 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
     // Trigger dialogs after the frame in which status changed.
     WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowDialog(game));
 
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -209,12 +212,12 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
               ),
             ),
             const SizedBox(width: 8),
-            Text('${kDifficulties[widget.difficulty]!.label} — Up2048'),
+            Text('${difficultyLabel(l10n, widget.difficulty)} — ${l10n.appTitle}'),
           ],
         ),
         actions: [
           IconButton(
-            tooltip: 'New game',
+            tooltip: l10n.tooltipNewGame,
             icon: const Icon(Icons.refresh),
             onPressed: () => _confirmNewGame(game),
           ),

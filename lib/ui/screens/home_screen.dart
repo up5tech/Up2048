@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
+
 import '../../controllers/game_controller.dart';
 import '../../controllers/stats_controller.dart';
 import '../../domain/models/difficulty.dart';
@@ -40,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final scheme = Theme.of(context).colorScheme;
     final stats = context.watch<StatsController>();
     final game = context.read<GameController>();
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       body: SafeArea(
@@ -49,8 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 28, 20, 32),
               children: [
-                const Text(
-                  'Up2048',
+                Text(
+                  l10n.appTitle,
                   style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.w900,
@@ -59,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Swipe to slide and merge tiles. Pick a difficulty.',
+                  l10n.homeSubtitle,
                   style: TextStyle(fontSize: 14, color: scheme.onSurfaceVariant),
                 ),
                 const SizedBox(height: 24),
@@ -83,17 +86,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     OutlinedButton.icon(
                       onPressed: () => _openScreen(const StatsScreen()),
                       icon: const Icon(Icons.bar_chart, size: 18),
-                      label: const Text('Stats'),
+                      label: Text(l10n.statsButton),
                     ),
                     OutlinedButton.icon(
                       onPressed: () => _openScreen(const SettingsScreen()),
                       icon: const Icon(Icons.tune, size: 18),
-                      label: const Text('Settings'),
+                      label: Text(l10n.settingsButton),
                     ),
                     OutlinedButton.icon(
                       onPressed: () => _openScreen(const HowToPlayScreen()),
                       icon: const Icon(Icons.help_outline, size: 18),
-                      label: const Text('How to play'),
+                      label: Text(l10n.howToPlayButton),
                     ),
                   ],
                 ),
