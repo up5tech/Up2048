@@ -17,7 +17,7 @@ if (hasReleaseKeystore) {
 }
 
 android {
-    namespace = "com.up2048.up_2048"
+    namespace = "com.up5.up2048"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -27,8 +27,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.up2048.up_2048"
+        applicationId = "com.up5.up2048"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -38,7 +37,7 @@ android {
         // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
         // flag during build.
         versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        versionName = "1.0"
     }
 
     signingConfigs {
